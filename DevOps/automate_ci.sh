@@ -2,6 +2,13 @@
 
 set -e  # Exit immediately if any command fails
 
+# Checking for dependencies
+# Check if GitHub CLI is installed
+if ! command -v gh &> /dev/null; then
+    echo "GitHub CLI (gh) not installed. Please install it to create a PR."
+    exit 1
+fi
+
 # Set repo URLs and branch names
 CK_REPO_URL="https://github.com/ROCm/composable_kernel"
 CK_REPO_DIR="composable_kernel"
@@ -17,6 +24,7 @@ MIOPEN_BRANCH_PR="promote_ck"
 if [ -d "$CK_REPO_DIR" ]; then
     echo "Repository $CK_REPO_DIR already exists. Pulling latest changes..."
     cd "$CK_REPO_DIR" || exit
+    git reset --hard
     git fetch origin
 else
     git clone "$CK_REPO_URL"
@@ -28,7 +36,10 @@ git checkout "$CK_BRANCH_TARGET" || { echo "Failed to checkout $CK_BRANCH_TARGET
 git pull origin "$CK_BRANCH_TARGET"
 
 # Merge develop into amd-develop
-git merge "$CK_BRANCH_MAIN" || { echo "Merge conflict detected. Resolve manually."; exit 1; }
+if ! git merge --no-edit "$CK_BRANCH_MAIN"; then
+    echo "Merge conflict detected. Please resolve manually."
+    exit 1
+fi
 
 # Push the updated amd-develop branch
 git push origin "$CK_BRANCH_TARGET"
@@ -42,6 +53,7 @@ cd ..
 if [ -d "$MIOPEN_REPO_DIR" ]; then
     echo "Repository $MIOPEN_REPO_DIR already exists. Pulling latest changes..."
     cd "$MIOPEN_REPO_DIR" || exit
+    git reset --hard
     git fetch origin
 else
     git clone "$MIOPEN_REPO_URL"
@@ -76,12 +88,6 @@ else
     git add "$REQ_FILE" "$DOCKER_FILE"
     git commit -m "Update CK commit hash in requirements.txt and Dockerfile"
     git push origin "$MIOPEN_BRANCH_PR"
-fi
-
-# Check if GitHub CLI is installed
-if ! command -v gh &> /dev/null; then
-    echo "GitHub CLI (gh) not installed. Please install it to create a PR."
-    exit 1
 fi
 
 # Create a pull request
