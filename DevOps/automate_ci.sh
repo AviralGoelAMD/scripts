@@ -86,5 +86,5 @@ fi
 
 # Create a pull request
 gh pr create --base "$MIOPEN_BRANCH_MAIN" --head "$MIOPEN_BRANCH_PR" \
-    --title "[DO NOT MERGE][CI TEST] Update CK commit hash for staging" \
+    --title "Update CK commit hash for staging" \
     --body "This PR updates the CK commit hash in requirements.txt and Dockerfile."
