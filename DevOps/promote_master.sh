@@ -1,7 +1,11 @@
 #!/bin/bash
 
-# Set Docker Hub image name
-DOCKER_IMAGE="avirgoel/ck_ub22.04_automate_staging:latest"
+# Set Docker Hub image name based on the argument
+if [[ "$1" == "real" ]]; then # for real production run
+    DOCKER_IMAGE="avirgoel/ck_ub22.04_automate_staging_amd_develop:latest"
+else # for testing purposes or unintended run
+    DOCKER_IMAGE="avirgoel/ck_ub22.04_automate_staging:latest"
+fi
 
 # Pull the latest image from Docker Hub
 echo "Pulling the latest Docker image: $DOCKER_IMAGE..."
