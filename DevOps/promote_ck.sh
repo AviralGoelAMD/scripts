@@ -3,22 +3,50 @@
 set -e  # Exit immediately if any command fails
 
 # Checking for dependencies
-# Check if GitHub CLI is installed
 if ! command -v gh &> /dev/null; then
     echo "GitHub CLI (gh) not installed. Please install it to create a PR."
     exit 1
 fi
 
+# Prompt user for Git configuration
+echo "Setting up Git user configuration..."
+
+# Check if environment variables are set
+if [[ -z "$GIT_USER_NAME" || -z "$GIT_USER_EMAIL" ]]; then
+    echo "Error: GIT_USER_NAME or GIT_USER_EMAIL is not set."
+    exit 1
+fi
+
+git config --global user.name "$GIT_USER_NAME"
+git config --global user.email "$GIT_USER_EMAIL"
+
+echo "Git user configuration set:"
+git config --global --list
+
+# Check if the user is already authenticated with GitHub CLI
+if ! gh auth status &> /dev/null; then
+    echo "You are not logged into GitHub. Please log in first."
+    gh auth login
+else
+    echo "GitHub authentication detected. Proceeding..."
+fi
+
+# Default branch values
+CK_BRANCH_MAIN="develop"
+CK_BRANCH_TARGET_DEFAULT="test_amd-develop"
+MIOPEN_BRANCH_MAIN="develop"
+MIOPEN_BRANCH_PR_DEFAULT="test_promote_ck"
+
+# Allow overriding defaults with command-line arguments
+CK_BRANCH_TARGET="${1:-$CK_BRANCH_TARGET_DEFAULT}"
+MIOPEN_BRANCH_PR="${2:-$MIOPEN_BRANCH_PR_DEFAULT}"
+
 # Set repo URLs and branch names
 CK_REPO_URL="https://github.com/ROCm/composable_kernel"
 CK_REPO_DIR="composable_kernel"
-CK_BRANCH_MAIN="develop"
-CK_BRANCH_TARGET="amd-develop"
 
 MIOPEN_REPO_URL="https://github.com/ROCm/MIOpen"
 MIOPEN_REPO_DIR="MIOpen"
-MIOPEN_BRANCH_MAIN="develop"
-MIOPEN_BRANCH_PR="promote_ck"
 
 # Clone or update composable_kernel repository
 if [ -d "$CK_REPO_DIR" ]; then
@@ -31,20 +59,19 @@ else
     cd "$CK_REPO_DIR" || exit
 fi
 
-# Checkout amd-develop and pull latest changes
+# Checkout CK_BRANCH_TARGET_DEFAULT and pull latest changes
 git checkout "$CK_BRANCH_TARGET" || { echo "Failed to checkout $CK_BRANCH_TARGET"; exit 1; }
 git pull origin "$CK_BRANCH_TARGET"
 
-# Merge develop into amd-develop
+# Merge develop into target branch
 if ! git merge --no-edit "$CK_BRANCH_MAIN"; then
     echo "Merge conflict detected. Please resolve manually."
     exit 1
 fi
 
-# Push the updated amd-develop branch
 git push origin "$CK_BRANCH_TARGET"
 
-# Get the latest commit hash of amd-develop
+# Get the latest commit hash of target branch
 LATEST_COMMIT_CK=$(git rev-parse HEAD)
 echo "Latest commit hash in CK: $LATEST_COMMIT_CK"
 
