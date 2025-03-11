@@ -33,9 +33,9 @@ fi
 
 # Default branch values
 CK_BRANCH_MAIN="develop"
-CK_BRANCH_TARGET_DEFAULT="test_amd-develop"
+CK_BRANCH_TARGET_DEFAULT="amd-develop"
 MIOPEN_BRANCH_MAIN="develop"
-MIOPEN_BRANCH_PR_DEFAULT="test_promote_ck"
+MIOPEN_BRANCH_PR_DEFAULT="promote_ck_staging"
 
 # Allow overriding defaults with command-line arguments
 CK_BRANCH_TARGET="${1:-$CK_BRANCH_TARGET_DEFAULT}"
@@ -99,25 +99,16 @@ else
     echo "requirements.txt not found!"
 fi
 
-# Modify Dockerfile if it exists
-DOCKER_FILE="Dockerfile"
-if [ -f "$DOCKER_FILE" ]; then
-    sed -i "s|ARG CK_COMMIT=[^ ]*|ARG CK_COMMIT=$LATEST_COMMIT_CK|" "$DOCKER_FILE"
-    echo "Updated Dockerfile with latest CK commit hash."
-else
-    echo "Dockerfile not found!"
-fi
-
 # Check for changes before committing
 if git diff --quiet; then
     echo "No changes detected. Skipping commit."
 else
     git add "$REQ_FILE" "$DOCKER_FILE"
-    git commit -m "Update CK commit hash in requirements.txt and Dockerfile"
+    git commit -m "Update CK commit hash in requirements.txt"
     git push origin "$MIOPEN_BRANCH_PR"
 fi
 
 # Create a pull request
 gh pr create --base "$MIOPEN_BRANCH_MAIN" --head "$MIOPEN_BRANCH_PR" \
     --title "Update CK commit hash for staging" \
-    --body "This PR updates the CK commit hash in requirements.txt and Dockerfile."
+    --body "This PR updates the CK commit hash in requirements.txt."
