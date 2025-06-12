@@ -1,0 +1,24 @@
+clone() {
+  case "$1" in
+    ck) git clone https://github.com/ROCm/composable_kernel ;;
+    mlse-tools-internal) git clone https://github.com/ROCm/mlse-tools-internal ;;
+    MIOpen) git clone https://github.com/ROCm/MIOpen ;;
+    *) git clone "$@" ;;
+  esac
+}
+
+function mkcd() {
+    mkdir -p "$1"
+    cd "$1"
+}
+
+function cmake_build() {
+    local tgt=${1:-gfx942}
+    cmake -D CMAKE_PREFIX_PATH=/opt/rocm \
+          -D CMAKE_CXX_COMPILER=/opt/rocm/llvm/bin/clang++ \
+          -D CMAKE_BUILD_TYPE=Release \
+          -D GPU_TARGETS="$tgt" \
+          -DCMAKE_CXX_FLAGS=" -O3" ..
+}
+
+
