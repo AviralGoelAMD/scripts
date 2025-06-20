@@ -10,9 +10,14 @@ alias docker_ck='docker run --rm -it \
 
 clone() {
   case "$1" in
-    ck) git clone https://github.com/ROCm/composable_kernel ;;
+    ck) git clone https://github.com/ROCm/composable_kernel && cd composable_kernel && mkdir build ;;
     mlse-tools-internal) git clone https://github.com/ROCm/mlse-tools-internal ;;
     MIOpen) git clone https://github.com/ROCm/MIOpen ;;
     *) git clone "$@" ;;
   esac
+}
+
+# mkcd
+mkcd() {
+  mkdir -p "$1" && cd "$1"
 }
