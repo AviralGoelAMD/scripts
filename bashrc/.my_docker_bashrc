@@ -21,4 +21,7 @@ function cmake_build() {
           -DCMAKE_CXX_FLAGS=" -O3" ..
 }
 
+alias readysetgit='git config --global --add safe.directory "$(pwd)" && git config --global user.name "AviralGoelAMD" && git config --global user.email "aviral.goel@amd.com"'
+
+
 
