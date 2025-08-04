@@ -1,9 +1,23 @@
+#### Alias to git clone repos
 clone() {
   case "$1" in
-    ck) git clone https://github.com/ROCm/composable_kernel ;;
-    mlse-tools-internal) git clone https://github.com/ROCm/mlse-tools-internal ;;
-    MIOpen) git clone https://github.com/ROCm/MIOpen ;;
-    *) git clone "$@" ;;
+    ck)
+      git clone https://github.com/ROCm/composable_kernel
+      cd composable_kernel || return
+      if [ -n "$2" ]; then
+        git checkout "$2"
+      fi
+      mkdir -p build
+      ;;
+    mlse-tools-internal)
+      git clone https://github.com/ROCm/mlse-tools-internal
+      ;;
+    MIOpen)
+      git clone https://github.com/ROCm/MIOpen
+      ;;
+    *)
+      git clone "$@"
+      ;;
   esac
 }
 
