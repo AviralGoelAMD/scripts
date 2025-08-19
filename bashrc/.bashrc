@@ -40,6 +40,32 @@ mkcd() {
   mkdir -p "$1" && cd "$1"
 }
 
+function ninja_build() {
+    local tgt=${1:-gfx942}
+    cmake -G Ninja \
+          -D CMAKE_PREFIX_PATH=/opt/rocm \
+          -D CMAKE_CXX_COMPILER=/opt/rocm/llvm/bin/clang++ \
+          -D CMAKE_BUILD_TYPE=Release \
+          -D GPU_TARGETS="$tgt" \
+          -D CMAKE_CXX_FLAGS="-O3" \
+          ..
+}
+
+function cmake_build() {
+    local tgt=${1:-gfx942}
+    cmake -D CMAKE_PREFIX_PATH=/opt/rocm \
+          -D CMAKE_CXX_COMPILER=/opt/rocm/llvm/bin/clang++ \
+          -D CMAKE_BUILD_TYPE=Release \
+          -D GPU_TARGETS="$tgt" \
+          -DCMAKE_CXX_FLAGS=" -O3" ..
+}
+
 alias readysetgit='git config --global --add safe.directory "$(pwd)" && \
 git config --global user.name "AviralGoelAMD" && \
 git config --global user.email "aviral.goel@amd.com"'
+
+
+alias ownthis='sudo chown -R $(whoami):$(whoami) .'
+
+alias gs='git status'
+
