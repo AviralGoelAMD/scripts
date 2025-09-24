@@ -66,6 +66,6 @@ git config --global user.email "aviral.goel@amd.com"'
 
 
 alias ownthis='sudo chown -R $(whoami):$(whoami) .'
-
+alias gitfp='git fetch && git pull origin $(git rev-parse --abbrev-ref HEAD)'
 alias gs='git status'
 
