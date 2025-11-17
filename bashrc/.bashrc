@@ -5,7 +5,7 @@ alias docker_ck='docker run --rm -it \
   -w /root/workspace \
   -v "$(pwd)":/root/workspace \
   -v ~/.my_docker_bashrc:/root/.my_docker_bashrc \
-  rocm/composable_kernel:ck_ub24.04_rocm6.4.1 \
+  rocm/composable_kernel:ck_ub24.04_rocm7.0.1 \
   /bin/bash -c "echo '\''source ~/.my_docker_bashrc'\'' >> ~/.bashrc && exec bash"'
 
 
@@ -33,13 +33,6 @@ clone() {
   esac
 }
 
-
-
-# mkcd
-mkcd() {
-  mkdir -p "$1" && cd "$1"
-}
-
 function ninja_build() {
     local tgt=${1:-gfx942}
     cmake -G Ninja \
@@ -60,12 +53,17 @@ function cmake_build() {
           -DCMAKE_CXX_FLAGS=" -O3" ..
 }
 
+
+
+# mkcd
+mkcd() {
+  mkdir -p "$1" && cd "$1"
+}
+
 alias readysetgit='git config --global --add safe.directory "$(pwd)" && \
 git config --global user.name "AviralGoelAMD" && \
 git config --global user.email "aviral.goel@amd.com"'
 
-
 alias ownthis='sudo chown -R $(whoami):$(whoami) .'
-alias gitfp='git fetch && git pull origin $(git rev-parse --abbrev-ref HEAD)'
-alias gs='git status'
 
+alias gs='git status'
