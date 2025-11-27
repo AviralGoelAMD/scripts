@@ -66,4 +66,6 @@ git config --global user.email "aviral.goel@amd.com"'
 
 alias ownthis='sudo chown -R $(whoami):$(whoami) .'
 
+# git alias
 alias gs='git status'
+alias gitpushit='git push --set-upstream origin $(git branch --show-current)'
