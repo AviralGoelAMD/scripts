@@ -49,5 +49,6 @@ function ninja_build() {
 
 
 alias readysetgit='git config --global --add safe.directory "$(pwd)" && git config --global user.name "AviralGoelAMD" && git config --global user.email "aviral.goel@amd.com"'
-
+# git alias
 alias gs='git status'
+alias gitpushit='git push --set-upstream origin $(git branch --show-current)'
