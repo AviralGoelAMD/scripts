@@ -5,7 +5,7 @@ alias docker_ck='docker run --rm -it \
   -w /root/workspace \
   -v "$(pwd)":/root/workspace \
   -v ~/.my_docker_bashrc:/root/.my_docker_bashrc \
-  rocm/composable_kernel:ck_ub24.04_rocm7.0.1 \
+  rocm/composable_kernel:ck_ub24.04_rocm7.1.1 \
   /bin/bash -c "echo '\''source ~/.my_docker_bashrc'\'' >> ~/.bashrc && exec bash"'
 
 
