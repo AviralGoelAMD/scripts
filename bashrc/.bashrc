@@ -10,13 +10,12 @@ alias docker_ck='docker run --rm -it \
 
 
 
-#### Alias to git clone repos
 clone() {
   case "$1" in
     ck)
       git clone https://github.com/ROCm/composable_kernel
       cd composable_kernel || return
-      if [ -n "$2" ]; then
+      if [ -n "${2:-}" ]; then
         git checkout "$2"
       fi
       mkdir -p build
@@ -32,6 +31,7 @@ clone() {
       ;;
   esac
 }
+
 
 function ninja_build() {
     local tgt=${1:-gfx942}
