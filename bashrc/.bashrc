@@ -13,11 +13,17 @@ alias docker_ck='docker run --rm -it \
 clone() {
   case "$1" in
     ck)
-      git clone https://github.com/ROCm/composable_kernel
-      cd composable_kernel || return
+      # Clone rocm-libraries monorepo with sparse checkout for composablekernel only
+      git clone --no-checkout https://github.com/ROCm/rocm-libraries.git rocm-libraries
+      cd rocm-libraries || return
+      git sparse-checkout init --cone
+      git sparse-checkout set projects/composablekernel
       if [ -n "${2:-}" ]; then
         git checkout "$2"
+      else
+        git checkout
       fi
+      cd projects/composablekernel || return
       mkdir -p build
       ;;
     mlse-tools-internal)
