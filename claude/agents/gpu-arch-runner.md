@@ -84,7 +84,7 @@ Mount the CK source directory (`WORK_DIR/CLONE_DIR/SPARSE_PATH`) as `/root/works
 ```bash
 ssh SSH_FLAGS USER@HOST "
   CK_SOURCE=WORK_DIR/CLONE_DIR/SPARSE_PATH &&
-  docker run --rm --privileged --group-add sudo --network host \
+  docker run --rm --network host --device=/dev/kfd --device=/dev/dri --ipc=host --group-add video --security-opt seccomp=unconfined \
     -w /root/workspace \
     -v \${CK_SOURCE}:/root/workspace \
     -v DOCKER_BASHRC:/root/.my_docker_bashrc \
@@ -106,7 +106,7 @@ Only run if cmake succeeded (exit code 0).
 ```bash
 ssh SSH_FLAGS USER@HOST "
   CK_SOURCE=WORK_DIR/CLONE_DIR/SPARSE_PATH &&
-  docker run --rm --privileged --group-add sudo --network host \
+  docker run --rm --network host --device=/dev/kfd --device=/dev/dri --ipc=host --group-add video --security-opt seccomp=unconfined \
     -w /root/workspace \
     -v \${CK_SOURCE}:/root/workspace \
     -v DOCKER_BASHRC:/root/.my_docker_bashrc \
@@ -128,7 +128,7 @@ Only run if ninja succeeded (exit code 0).
 ```bash
 ssh SSH_FLAGS USER@HOST "
   CK_SOURCE=WORK_DIR/CLONE_DIR/SPARSE_PATH &&
-  docker run --rm --privileged --group-add sudo --network host \
+  docker run --rm --network host --device=/dev/kfd --device=/dev/dri --ipc=host --group-add video --security-opt seccomp=unconfined \
     -w /root/workspace \
     -v \${CK_SOURCE}:/root/workspace \
     -v DOCKER_BASHRC:/root/.my_docker_bashrc \
