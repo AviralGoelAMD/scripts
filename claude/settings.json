@@ -2,7 +2,11 @@
   "apiKeyHelper": "echo {apiKey}",
   "permissions": {
     "allow": [
-      "Bash(*)"
+      "Bash(ssh -o ConnectTimeout=30 -o BatchMode=yes*)",
+      "Bash(git remote get-url*)",
+      "Bash(git branch --show-current*)",
+      "Bash(git status --short*)",
+      "Bash(cat ~/.claude/*)"
     ]
   }
 }
