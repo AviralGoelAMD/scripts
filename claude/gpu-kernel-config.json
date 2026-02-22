@@ -1,0 +1,54 @@
+{
+  "_comment": "GPU kernel multi-arch test config for Composable Kernel (CK) builds.",
+
+  "repo": {
+    "url": "https://github.com/ROCm/rocm-libraries.git",
+    "clone_dir": "rocm-libraries",
+    "sparse_path": "projects/composablekernel",
+    "_comment": "Sparse checkout: only projects/composablekernel is checked out. CK source lives at clone_dir/sparse_path."
+  },
+
+  "machines": [
+    {
+      "arch": "gfx950",
+      "host": "smci350-odcdh1-a05-2.png-odc.dcgpu",
+      "user": "avirgoel",
+      "work_dir": "/home/avirgoel/gpu-kernel-tests",
+      "_comment": "MI350"
+    },
+    {
+      "arch": "gfx942",
+      "host": "smc300x-clt-r4c8-37.cs-clt.dcgpu",
+      "user": "avirgoel",
+      "work_dir": "/home/avirgoel/gpu-kernel-tests",
+      "_comment": "MI300"
+    }
+  ],
+
+  "docker": {
+    "image": "rocm/composable_kernel:ck_ub24.04_rocm7.1.1",
+    "bashrc": "~/.my_docker_bashrc",
+    "_comment": "bashrc must exist on each remote machine at this path"
+  },
+
+  "build": {
+    "dir": "build",
+    "cmake_flags": "-G Ninja -D CMAKE_PREFIX_PATH=/opt/rocm -D CMAKE_CXX_COMPILER=/opt/rocm/llvm/bin/clang++ -D CMAKE_BUILD_TYPE=Release -D CMAKE_CXX_FLAGS='-O3'",
+    "target": "tile_example_gemm_universal",
+    "_comment_target": "The ninja build target, e.g. 'test_gemm_fp16'. Also used as the binary name under bin/.",
+    "ninja_jobs": 256
+  },
+
+  "run": {
+    "args": "",
+    "_comment_args": "Extra arguments passed to the binary, if any",
+    "timeout_seconds": 300
+  },
+
+  "fix": {
+    "max_iterations": 3,
+    "_comment_iterations": "Max fix-recompile cycles before escalating to user",
+    "auto_push": true,
+    "_comment_push": "If true, agent commits and pushes fixes before asking remote to rebuild. If false, shows diffs and waits for you to push manually."
+  }
+}

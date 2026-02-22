@@ -1,0 +1,8 @@
+{
+  "apiKeyHelper": "echo {apiKey}",
+  "permissions": {
+    "allow": [
+      "Bash(*)"
+    ]
+  }
+}
