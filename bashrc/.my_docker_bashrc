@@ -1,13 +1,15 @@
-#### Alias to git clone repos
+mkcd()
+{
+  mkdir -p "$1" && cd "$1"
+}
+
 clone() {
   case "$1" in
     ck)
-      git clone https://github.com/ROCm/composable_kernel
-      cd composable_kernel || return
-      if [ -n "$2" ]; then
-        git checkout "$2"
-      fi
-      mkdir -p build
+      git clone https://github.com/ROCm/rocm-libraries.git
+      ;;
+    ck-old)
+      git clone -b develop https://github.com/ROCm/composable_kernel.git
       ;;
     mlse-tools-internal)
       git clone https://github.com/ROCm/mlse-tools-internal
@@ -15,40 +17,34 @@ clone() {
     MIOpen)
       git clone https://github.com/ROCm/MIOpen
       ;;
+    aiter)
+      git clone https://github.com/ROCm/aiter.git
+      ;;
     *)
       git clone "$@"
       ;;
   esac
 }
 
-function mkcd() {
-    mkdir -p "$1"
-    cd "$1"
-}
-
-function cmake_build() {
-    local tgt=${1:-gfx942}
-    cmake -D CMAKE_PREFIX_PATH=/opt/rocm \
-          -D CMAKE_CXX_COMPILER=/opt/rocm/llvm/bin/clang++ \
-          -D CMAKE_BUILD_TYPE=Release \
-          -D GPU_TARGETS="$tgt" \
-          -DCMAKE_CXX_FLAGS=" -O3" ..
-}
 function ninja_build() {
     local tgt=${1:-gfx942}
+    local cxx_flags="-O3${2:+ $2}"
     cmake -G Ninja \
           -D CMAKE_PREFIX_PATH=/opt/rocm \
           -D CMAKE_CXX_COMPILER=/opt/rocm/llvm/bin/clang++ \
           -D CMAKE_BUILD_TYPE=Release \
           -D GPU_TARGETS="$tgt" \
-          -D CMAKE_CXX_FLAGS="-O3" \
+          -D CMAKE_CXX_FLAGS="$cxx_flags" \
           ..
 }
 
-
-
-
-alias readysetgit='git config --global --add safe.directory "$(pwd)" && git config --global user.name "AviralGoelAMD" && git config --global user.email "aviral.goel@amd.com"'
-# git alias
-alias gs='git status'
-alias gitpushit='git push --set-upstream origin $(git branch --show-current)'
+function cmake_build() {
+    local tgt=${1:-gfx942}
+    local cxx_flags="-O3${2:+ $2}"
+    cmake -D CMAKE_PREFIX_PATH=/opt/rocm \
+          -D CMAKE_CXX_COMPILER=/opt/rocm/llvm/bin/clang++ \
+          -D CMAKE_BUILD_TYPE=Release \
+          -D GPU_TARGETS="$tgt" \
+          -D CMAKE_CXX_FLAGS="$cxx_flags" \
+          ..
+}
